@@ -1,56 +1,719 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dr.Strangelove - Personal Website</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quan Long</title>
+<meta name="description" content="Quan Long — category theory and programming language semantics, violin, photographs, art projects.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,200;0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js');</script>
+
+<!--
+  ─────────────────────────────────────────────────────────────
+  HOW TO EDIT THIS PAGE
+
+  · Everything is in this one file: markup, styles, behaviour.
+    (style.css from the old version is no longer used — delete it.)
+  · Each of the four sections is a <section class="view"> with an id.
+    Navigation is by URL hash: /#research, /#photographs, etc.
+  · Blocks marked  <!-- TEMPLATE -->  are meant to be copied and filled in.
+  · Photographs expect files at  images/photo-01.jpg  and so on.
+    Until a file exists the tile shows its own filename, so you always
+    know what to drop into the repo.
+  · PDFs keep living in  pdf/.
+  ─────────────────────────────────────────────────────────────
+-->
+
+<style>
+:root {
+  --paper:      #F7F8FB;
+  --paper-warm: #FDFDFE;
+  --ink:        #1B2A47;
+  --ink-soft:   #5D6C88;
+  --ink-faint:  #93A0B6;
+  --rule:       #C8C4E2;
+  --red:        #B4372F;
+  --red-soft:   #D9928C;
+  --grid:       rgba(140, 133, 196, 0.16);
+  --focus:      #3A56A8;
+
+  --serif: "Spectral", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --measure: 62ch;
+  --gutter: 8.4rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:      #121727;
+    --paper-warm: #171D30;
+    --ink:        #E4E8F3;
+    --ink-soft:   #9AA6C0;
+    --ink-faint:  #6B778F;
+    --rule:       #3A3D60;
+    --red:        #E0736A;
+    --red-soft:   #8C463F;
+    --grid:       rgba(150, 143, 210, 0.13);
+    --focus:      #8FA8E8;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:      #121727;
+  --paper-warm: #171D30;
+  --ink:        #E4E8F3;
+  --ink-soft:   #9AA6C0;
+  --ink-faint:  #6B778F;
+  --rule:       #3A3D60;
+  --red:        #E0736A;
+  --red-soft:   #8C463F;
+  --grid:       rgba(150, 143, 210, 0.13);
+  --focus:      #8FA8E8;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 17px;
+  line-height: 1.68;
+  font-variant-numeric: oldstyle-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+p a, .prose a {
+  text-decoration: underline;
+  text-decoration-color: var(--red-soft);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+p a:hover, .prose a:hover { color: var(--red); text-decoration-color: var(--red); }
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+img { max-width: 100%; display: block; }
+
+/* ── the sheet: a ruled page with a margin column ─────────────── */
+
+.sheet {
+  position: relative;
+  max-width: 66rem;
+  margin-inline: auto;
+  padding-inline: 2rem;
+}
+.sheet::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  left: calc(2rem + var(--gutter));
+  width: 1px;
+  background: var(--red-soft);
+  opacity: .55;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  column-gap: 2rem;
+}
+.row > .margin {
+  text-align: right;
+  color: var(--ink-faint);
+  font-size: .82rem;
+  line-height: 1.5;
+  letter-spacing: .02em;
+  padding-top: .45em;
+}
+
+/* ── masthead ─────────────────────────────────────────────────── */
+
+.masthead {
+  padding-block: 2.4rem 1.6rem;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(8px);
+}
+.masthead .margin {
+  padding-top: .1em;
+  font-size: .95rem;
+  color: var(--ink);
+}
+.masthead nav ul {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.6rem;
+  font-size: .95rem;
+  color: var(--ink-soft);
+}
+.masthead nav a {
+  padding-bottom: .2em;
+  border-bottom: 1px solid transparent;
+}
+.masthead nav a:hover { color: var(--ink); border-bottom-color: var(--rule); }
+.masthead nav a[aria-current="page"] {
+  color: var(--ink);
+  border-bottom-color: var(--red);
+}
+
+/* ── views ────────────────────────────────────────────────────── */
+
+.view { padding-block: 2rem 5rem; }
+.js .view[hidden] { display: none; }
+
+.view-title {
+  font-size: clamp(1.9rem, 4vw, 2.7rem);
+  font-weight: 200;
+  line-height: 1.1;
+  margin: 0 0 .7rem;
+  letter-spacing: -0.01em;
+}
+.prose { max-width: var(--measure); margin: 0 0 3.2rem; color: var(--ink-soft); }
+.prose p { margin: 0 0 1em; }
+
+/* ── home ─────────────────────────────────────────────────────── */
+
+#home { padding-top: 1rem; }
+.name {
+  font-size: clamp(3.1rem, 11vw, 6.4rem);
+  font-weight: 200;
+  line-height: .95;
+  letter-spacing: -0.03em;
+  margin: 0 0 1.4rem;
+}
+.name .alias {
+  display: block;
+  font-size: .95rem;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0;
+  color: var(--ink-faint);
+  margin-top: 1.1rem;
+}
+.bio { max-width: 46ch; font-size: 1.12rem; margin: 0 0 3.4rem; }
+
+.plate {
+  background: var(--paper-warm);
+  background-image:
+    repeating-linear-gradient(to right,  var(--grid) 0 1px, transparent 1px 28px),
+    repeating-linear-gradient(to bottom, var(--grid) 0 1px, transparent 1px 28px);
+  border: 1px solid var(--rule);
+  padding: 1.5rem .5rem;
+}
+.plate svg { width: 100%; height: auto; display: block; }
+
+.node text {
+  font-family: var(--serif);
+  font-size: 29px;
+  font-weight: 300;
+  fill: var(--ink);
+  transition: fill .18s ease;
+}
+.node:hover text, .node:focus-visible text { fill: var(--red); }
+.node:hover text { text-decoration: underline; text-underline-offset: 5px; }
+.arrow { stroke: var(--ink-soft); stroke-width: 1.1; fill: none; }
+.arrow-label {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  fill: var(--ink-soft);
+}
+.commutes {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  fill: var(--ink-faint);
+  opacity: .8;
+}
+
+.js .plate svg .arrow,
+.js .plate svg .head {
+  animation: draw 1s cubic-bezier(.4,0,.2,1) both;
+}
+.js .plate svg .arrow { stroke-dasharray: 260; stroke-dashoffset: 260; }
+@keyframes draw { to { stroke-dashoffset: 0; opacity: 1; } }
+.js .plate svg .head { opacity: 0; animation-name: fadein; animation-delay: .75s; }
+@keyframes fadein { to { opacity: 1; } }
+
+.diagram-list { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .js .plate svg .arrow { animation: none; stroke-dashoffset: 0; }
+  .js .plate svg .head  { animation: none; opacity: 1; }
+  * { scroll-behavior: auto !important; }
+}
+
+/* ── entries (research, composing) ────────────────────────────── */
+
+.entry {
+  padding-block: 1.8rem;
+  border-top: 1px solid var(--rule);
+}
+.entry:first-of-type { border-top: 1px solid var(--ink-faint); }
+.entry h3 {
+  font-size: 1.32rem;
+  font-weight: 400;
+  line-height: 1.3;
+  margin: 0 0 .45rem;
+}
+.entry p { margin: 0 0 .7rem; max-width: var(--measure); color: var(--ink-soft); }
+.entry .credit { font-style: italic; color: var(--ink-faint); font-size: .95rem; }
+.files { display: flex; flex-wrap: wrap; gap: 1.3rem; font-size: .95rem; margin: 0; }
+.files a {
+  border-bottom: 1px solid var(--red-soft);
+  padding-bottom: .12em;
+}
+.files a:hover { color: var(--red); border-bottom-color: var(--red); }
+.status { color: var(--red); }
+
+audio { width: min(100%, 26rem); margin-top: .6rem; }
+
+/* ── photographs ──────────────────────────────────────────────── */
+
+.plates {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: 1.6rem 1.4rem;
+  margin: 0;
+}
+.shot { margin: 0; }
+.shot button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1px solid var(--rule);
+  background: var(--paper-warm);
+  cursor: zoom-in;
+  font: inherit;
+  color: inherit;
+}
+.shot img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4 / 5; }
+.shot figcaption {
+  margin-top: .55rem;
+  font-size: .88rem;
+  color: var(--ink-faint);
+  font-style: italic;
+}
+.absent {
+  display: none;
+  aspect-ratio: 4 / 5;
+  place-content: center;
+  padding: 1rem;
+  text-align: center;
+  font-size: .82rem;
+  line-height: 1.5;
+  color: var(--ink-faint);
+  background-image:
+    repeating-linear-gradient(to right,  var(--grid) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(to bottom, var(--grid) 0 1px, transparent 1px 22px);
+}
+.shot.missing img { display: none; }
+.shot.missing .absent { display: grid; }
+.shot.missing button { cursor: default; }
+
+dialog.lightbox {
+  border: none;
+  padding: 0;
+  background: transparent;
+  max-width: 94vw;
+  max-height: 94vh;
+}
+dialog.lightbox::backdrop { background: rgba(12, 16, 28, .88); }
+dialog.lightbox img { max-width: 94vw; max-height: 84vh; object-fit: contain; }
+dialog.lightbox p {
+  color: #D8DEEC;
+  font-style: italic;
+  font-size: .9rem;
+  text-align: center;
+  margin: .8rem 0 0;
+}
+
+/* ── art projects ─────────────────────────────────────────────── */
+
+.works { display: grid; gap: 0; }
+.work {
+  padding-block: 2.2rem;
+  border-top: 1px solid var(--rule);
+}
+.work:first-child { border-top: 1px solid var(--ink-faint); }
+.work h3 { font-size: 1.45rem; font-weight: 400; margin: 0 0 .3rem; }
+.work .medium { font-style: italic; color: var(--ink-faint); margin: 0 0 .9rem; font-size: .95rem; }
+.work p { max-width: var(--measure); color: var(--ink-soft); margin: 0 0 .7rem; }
+
+/* ── footer ───────────────────────────────────────────────────── */
+
+.colophon {
+  padding-block: 2.4rem 4rem;
+  font-size: .9rem;
+  color: var(--ink-faint);
+}
+.colophon .links { display: flex; flex-wrap: wrap; gap: 1.4rem; margin: 0 0 .6rem; }
+.colophon a { border-bottom: 1px solid var(--rule); padding-bottom: .1em; }
+.colophon a:hover { color: var(--red); border-bottom-color: var(--red); }
+
+/* ── narrow screens ───────────────────────────────────────────── */
+
+@media (max-width: 760px) {
+  .sheet { padding-inline: 1.4rem; }
+  .sheet::before { display: none; }
+  .row { grid-template-columns: minmax(0, 1fr); row-gap: .3rem; }
+  .row > .margin { text-align: left; padding-top: 0; }
+  .masthead { padding-block: 1.4rem 1rem; }
+  .masthead .margin { margin-bottom: .5rem; }
+  .masthead nav ul { gap: 1.1rem; font-size: .9rem; }
+  .plate { display: none; }
+  .diagram-list {
+    display: block;
+    list-style: none;
+    margin: 0; padding: 0;
+    border-top: 1px solid var(--ink-faint);
+  }
+  .diagram-list li { border-bottom: 1px solid var(--rule); }
+  .diagram-list a {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: .95rem 0;
+    font-size: 1.3rem;
+    font-weight: 300;
+  }
+  .diagram-list em { font-size: .85rem; color: var(--ink-faint); }
+  .view { padding-block: 1.4rem 3.5rem; }
+}
+</style>
 </head>
+
 <body>
-    <header>
-        <h1>Quan Long (Dr.Strangelove)</h1>
-        <nav>
-            <ul>
-                <li><a href="#about">About</a></li>
-                <li><a href="#portfolio">Portfolio</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
 
-    <section id="about">
-        <h2>About Me</h2>
-        <p>Theoretical computer science. Violinist. Photographer. FreeDiver. Contemporary art. </p>
-    </section>
+<header class="masthead">
+  <div class="sheet row">
+    <div class="margin">Quan&nbsp;Long</div>
+    <nav aria-label="Sections">
+      <ul>
+        <li><a href="#research" data-nav="research">Research</a></li>
+        <li><a href="#photographs" data-nav="photographs">Photographs</a></li>
+        <li><a href="#composing" data-nav="composing">Composing</a></li>
+        <li><a href="#art" data-nav="art">Art projects</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
 
-    <section id="portfolio">
-        <h2>Portfolio</h2>
-        <!-- Include your project/portfolio items here -->
-        <div class="portfolio-item">
-            <img src="images/project1.jpg" alt="Project 1">
-            <h3>Project 1</h3>
-            <p>Centre(center) of graded monads, this project talks about commutativity of 
-                graded monads and their centre (center). It was done under the supervision of 
-                Flavien Breuvart and Vladimir Zamdzhiev.</p>
-            <p><a href="pdf/centre_graded_monad.pdf" target="_blank">Paper Version</a></p>
-            <p><a href="pdf/central-graded-submonads.pdf" target="_blank">Report Version</a></p>
-        </div>
-        <div class="portfolio-item">
-            <img src="images/project2.jpg" alt="Project 2">
-            <h3>Project 2</h3>
-            <p>Comparing Current (functional) Automatic Differentiation Approaches. It was done under the supervision of 
-                Damiano Mazza.</p>
-            <p><a href="pdf/AD_Quan.pdf" target="_blank">Report Version</a></p>
-        </div>
-    </section>
+<main>
 
-    <section id="contact">
-        <h2>Contact Me</h2>
-        <p>You can reach me at <a href="mailto:quan@long.direct">quan@long.direct</a>.</p>
-    </section>
+<!-- ══ HOME ══════════════════════════════════════════════════ -->
+<section class="view" id="home" aria-label="Introduction">
+  <div class="sheet row">
+    <div class="margin"></div>
+    <div>
+      <h1 class="name">Quan Long<span class="alias">also answering to Dr.&thinsp;Strangelove</span></h1>
+      <p class="bio">Category theory and the semantics of programming languages, in France. Away from the desk: a violin, a camera, and as much depth as one breath allows.</p>
 
-    <footer>
-        <p>&copy; 2023 Dr.Strangelove</p>
-    </footer>
+      <div class="plate">
+        <svg viewBox="0 0 640 400" role="img" aria-label="A commutative square whose four corners link to the four sections of this site.">
+          <defs>
+            <marker id="tip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+            </marker>
+          </defs>
+
+          <g color="var(--ink-soft)">
+            <line class="arrow head" x1="248" y1="76" x2="404" y2="76" marker-end="url(#tip)" style="animation-delay:.05s"/>
+            <line class="arrow head" x1="128" y1="112" x2="128" y2="292" marker-end="url(#tip)" style="animation-delay:.2s"/>
+            <line class="arrow head" x1="512" y1="112" x2="512" y2="292" marker-end="url(#tip)" style="animation-delay:.35s"/>
+            <line class="arrow head" x1="232" y1="330" x2="416" y2="330" marker-end="url(#tip)" style="animation-delay:.5s"/>
+          </g>
+
+          <text class="arrow-label" x="326" y="60" text-anchor="middle">counterpoint</text>
+          <text class="arrow-label" x="116" y="206" text-anchor="end">attention</text>
+          <text class="arrow-label" x="524" y="206" text-anchor="start">notation</text>
+          <text class="arrow-label" x="324" y="356" text-anchor="middle">framing</text>
+          <text class="commutes" x="320" y="208" text-anchor="middle">and it commutes</text>
+
+          <a class="node" href="#research"><title>Research projects</title><text x="128" y="86" text-anchor="middle">Research</text></a>
+          <a class="node" href="#composing"><title>Composing</title><text x="512" y="86" text-anchor="middle">Composing</text></a>
+          <a class="node" href="#photographs"><title>Photographs</title><text x="128" y="340" text-anchor="middle">Photographs</text></a>
+          <a class="node" href="#art"><title>Art projects</title><text x="512" y="340" text-anchor="middle">Art&nbsp;projects</text></a>
+        </svg>
+      </div>
+
+      <ul class="diagram-list">
+        <li><a href="#research">Research <em>papers and reports</em></a></li>
+        <li><a href="#photographs">Photographs <em>film and digital</em></a></li>
+        <li><a href="#composing">Composing <em>scores and recordings</em></a></li>
+        <li><a href="#art">Art projects <em>objects and installations</em></a></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══ RESEARCH ══════════════════════════════════════════════ -->
+<section class="view" id="research" aria-label="Research">
+  <div class="sheet row">
+    <div class="margin"></div>
+    <div>
+      <h2 class="view-title">Research</h2>
+      <div class="prose">
+        <p>Monads and their gradings, effects, and the categorical structures underneath programming languages. Papers and internship reports below; the PDFs are hosted here.</p>
+      </div>
+    </div>
+  </div>
+
+  <article class="entry sheet row">
+    <div class="margin">2023</div>
+    <div>
+      <h3>Central submonads of graded monads</h3>
+      <p>On commutativity for graded monads, and the construction of their centre — the largest sub-structure on which everything commutes.</p>
+      <p class="credit">With Flavien Breuvart and Vladimir Zamdzhiev.</p>
+      <p class="files">
+        <a href="pdf/centre_graded_monad.pdf" target="_blank" rel="noopener">Paper</a>
+        <a href="pdf/central-graded-submonads.pdf" target="_blank" rel="noopener">Report</a>
+      </p>
+    </div>
+  </article>
+
+  <article class="entry sheet row">
+    <div class="margin">2022</div>
+    <div>
+      <h3>Comparing functional approaches to automatic differentiation</h3>
+      <p>A survey and comparison of the current functional presentations of automatic differentiation, and what each of them costs.</p>
+      <p class="credit">With Damiano Mazza.</p>
+      <p class="files">
+        <a href="pdf/AD_Quan.pdf" target="_blank" rel="noopener">Report</a>
+      </p>
+    </div>
+  </article>
+
+  <!-- TEMPLATE — copy this block for a new research entry -->
+  <article class="entry sheet row">
+    <div class="margin">In&nbsp;progress</div>
+    <div>
+      <h3>Working title of the current project</h3>
+      <p>Two or three sentences on what the question is and why it is interesting. Replace this text.</p>
+      <p class="credit">With Name and Name.</p>
+      <p class="files">
+        <a href="pdf/draft.pdf" target="_blank" rel="noopener">Draft</a>
+      </p>
+    </div>
+  </article>
+</section>
+
+<!-- ══ PHOTOGRAPHS ═══════════════════════════════════════════ -->
+<section class="view" id="photographs" aria-label="Photographs">
+  <div class="sheet row">
+    <div class="margin"></div>
+    <div>
+      <h2 class="view-title">Photographs</h2>
+      <div class="prose">
+        <p>Replace this line with a sentence about how and what you shoot — camera, film, the kinds of places you keep going back to. Click any frame to enlarge it.</p>
+      </div>
+
+      <div class="plates">
+        <!-- TEMPLATE — one <figure> per photograph. Put the files in images/. -->
+        <figure class="shot">
+          <button type="button">
+            <img src="images/photo-01.jpg" alt="Caption describing the photograph" loading="lazy">
+            <span class="absent"></span>
+          </button>
+          <figcaption>Caption — place, year</figcaption>
+        </figure>
+        <figure class="shot">
+          <button type="button">
+            <img src="images/photo-02.jpg" alt="Caption describing the photograph" loading="lazy">
+            <span class="absent"></span>
+          </button>
+          <figcaption>Caption — place, year</figcaption>
+        </figure>
+        <figure class="shot">
+          <button type="button">
+            <img src="images/photo-03.jpg" alt="Caption describing the photograph" loading="lazy">
+            <span class="absent"></span>
+          </button>
+          <figcaption>Caption — place, year</figcaption>
+        </figure>
+        <figure class="shot">
+          <button type="button">
+            <img src="images/photo-04.jpg" alt="Caption describing the photograph" loading="lazy">
+            <span class="absent"></span>
+          </button>
+          <figcaption>Caption — place, year</figcaption>
+        </figure>
+        <figure class="shot">
+          <button type="button">
+            <img src="images/photo-05.jpg" alt="Caption describing the photograph" loading="lazy">
+            <span class="absent"></span>
+          </button>
+          <figcaption>Caption — place, year</figcaption>
+        </figure>
+        <figure class="shot">
+          <button type="button">
+            <img src="images/photo-06.jpg" alt="Caption describing the photograph" loading="lazy">
+            <span class="absent"></span>
+          </button>
+          <figcaption>Caption — place, year</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ COMPOSING ═════════════════════════════════════════════ -->
+<section class="view" id="composing" aria-label="Composing">
+  <div class="sheet row">
+    <div class="margin"></div>
+    <div>
+      <h2 class="view-title">Composing</h2>
+      <div class="prose">
+        <p>Scores and recordings. Replace this line with a sentence about what you write and for whom.</p>
+      </div>
+    </div>
+  </div>
+
+  <article class="entry sheet row">
+    <div class="margin"><span class="status">In&nbsp;progress</span></div>
+    <div>
+      <h3>Sonata for solo violin</h3>
+      <p>A description of the piece: how many movements, what it is built on, what you were after. Replace this text.</p>
+      <p class="credit">Solo violin.</p>
+      <p class="files">
+        <a href="pdf/sonata-violin.pdf" target="_blank" rel="noopener">Score</a>
+      </p>
+    </div>
+  </article>
+
+  <!-- TEMPLATE — copy for each further piece. Delete the <audio> line if there is no recording. -->
+  <article class="entry sheet row">
+    <div class="margin">Year</div>
+    <div>
+      <h3>Title of the piece</h3>
+      <p>A sentence or two about it.</p>
+      <p class="credit">Instrumentation — duration.</p>
+      <p class="files">
+        <a href="pdf/score.pdf" target="_blank" rel="noopener">Score</a>
+      </p>
+      <audio controls preload="none" src="audio/recording.mp3"></audio>
+    </div>
+  </article>
+</section>
+
+<!-- ══ ART PROJECTS ══════════════════════════════════════════ -->
+<section class="view" id="art" aria-label="Art projects">
+  <div class="sheet row">
+    <div class="margin"></div>
+    <div>
+      <h2 class="view-title">Art projects</h2>
+      <div class="prose">
+        <p>Replace this line with a sentence on what you make outside the page and the staff — objects, installations, collaborations.</p>
+      </div>
+
+      <div class="works">
+        <!-- TEMPLATE — copy per project -->
+        <article class="work">
+          <h3>Title of the project</h3>
+          <p class="medium">Medium, dimensions — year</p>
+          <p>A short statement. What it is made of, what it does in a room, what it came out of. Two or three sentences is plenty.</p>
+          <p class="files"><a href="#" target="_blank" rel="noopener">Documentation</a></p>
+        </article>
+        <article class="work">
+          <h3>Title of the project</h3>
+          <p class="medium">Medium, dimensions — year</p>
+          <p>A short statement.</p>
+        </article>
+        <article class="work">
+          <h3>Title of the project</h3>
+          <p class="medium">Medium, dimensions — year</p>
+          <p>A short statement.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="colophon">
+  <div class="sheet row">
+    <div class="margin">Contact</div>
+    <div>
+      <p class="links">
+        <a href="mailto:quan@long.direct">quan@long.direct</a>
+        <a href="https://github.com/DrStrangelove42" target="_blank" rel="noopener">GitHub</a>
+      </p>
+      <p>© 2026 Quan Long</p>
+    </div>
+  </div>
+</footer>
+
+<dialog class="lightbox">
+  <img alt="">
+  <p></p>
+</dialog>
+
+<script>
+(function () {
+  var views = Array.prototype.slice.call(document.querySelectorAll('.view'));
+  var navs  = Array.prototype.slice.call(document.querySelectorAll('[data-nav]'));
+
+  function route() {
+    var id = (location.hash || '').replace('#', '') || 'home';
+    if (!document.getElementById(id) || !document.getElementById(id).classList.contains('view')) id = 'home';
+    views.forEach(function (v) { v.hidden = (v.id !== id); });
+    navs.forEach(function (a) {
+      if (a.getAttribute('data-nav') === id) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+    document.title = id === 'home' ? 'Quan Long'
+      : document.getElementById(id).querySelector('.view-title').textContent + ' — Quan Long';
+  }
+
+  window.addEventListener('hashchange', function () { route(); window.scrollTo(0, 0); });
+  route();
+
+  // Photographs that are not in the repo yet say so, instead of breaking.
+  document.querySelectorAll('.shot').forEach(function (fig) {
+    var img = fig.querySelector('img');
+    var slot = fig.querySelector('.absent');
+    function absent() {
+      fig.classList.add('missing');
+      slot.textContent = 'Add ' + (img.getAttribute('src') || 'the image file') + ' to the repository';
+    }
+    img.addEventListener('error', absent);
+    if (img.complete && img.naturalWidth === 0) absent();
+  });
+
+  // Lightbox
+  var box = document.querySelector('dialog.lightbox');
+  var boxImg = box.querySelector('img');
+  var boxCap = box.querySelector('p');
+  document.querySelectorAll('.shot button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var fig = btn.closest('.shot');
+      if (fig.classList.contains('missing')) return;
+      var img = fig.querySelector('img');
+      boxImg.src = img.currentSrc || img.src;
+      boxImg.alt = img.alt;
+      boxCap.textContent = fig.querySelector('figcaption').textContent;
+      if (typeof box.showModal === 'function') box.showModal();
+    });
+  });
+  box.addEventListener('click', function (e) { if (e.target === box) box.close(); });
+})();
+</script>
+
 </body>
 </html>
